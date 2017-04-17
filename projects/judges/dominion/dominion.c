@@ -667,6 +667,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
+	
+	useAdventurer(drawntreasure, currentPlayer, state, cardDrawn, temphand, z);
+	
+	/*** Moved to separate function ***
+	
       while(drawntreasure<2){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
@@ -685,11 +690,19 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
 	z=z-1;
       }
+	  
+	  */
+	  
+	  
+	  
       return 0;
 			
     case council_room:
+	
+	/*** Moved to separate function ***
       //+4 Cards
-      for (i = 0; i < 4; i++)
+	  //MY BUG - should be 4 not 3.
+      for (i = 0; i < 3; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
@@ -705,6 +718,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	      drawCard(i, state);
 	    }
 	}
+			
+	*/
+	
+	useCouncilRoom(currentPlayer, state);
 			
       //put played card in played card pile
       discardCard(handPos, currentPlayer, state, 0);
@@ -830,25 +847,41 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		
     case smithy:
       //+3 Cards
+	  
+	  /***Moved to separate function***
+	  
       for (i = 0; i < 3; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
-			
-      //discard card from hand
+	
+	*/
+	
+		useSmithy(currentPlayer, state);
+    
+		//discard card from hand
       discardCard(handPos, currentPlayer, state, 0);
+	  
       return 0;
 		
     case village:
+	
+	/*** Moved to separate function ***
+	
       //+1 Card
       drawCard(currentPlayer, state);
 			
       //+2 Actions
       state->numActions = state->numActions + 2;
-			
-      //discard played card from hand
+		
+	*/
+	
+	useVillage(currentPlayer, state);
+	
+	      //discard played card from hand
       discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+
+	return 0;
 		
     case baron:
       state->numBuys++;//Increase buys by 1!
@@ -902,12 +935,20 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case great_hall:
+	
+	/*** Moved to separate function ***
       //+1 Card
-      drawCard(currentPlayer, state);
+	  //MY BUG - This should not be commented out.
+      //drawCard(currentPlayer, state);
 			
       //+1 Actions
       state->numActions++;
 			
+			
+	*/
+	
+	useGreatHall(currentPlayer, state);
+	
       //discard card from hand
       discardCard(handPos, currentPlayer, state, 0);
       return 0;
@@ -1328,6 +1369,92 @@ int updateCoins(int player, struct gameState *state, int bonus)
   return 0;
 }
 
+int useSmithy(int player, struct gameState *state){
+	int i;
+	
+	//MY BUG - should be 3, not 4
+	for (i = 0; i < 4; i++)
+	{
+	  drawCard(player, state);
+	}
+	
+	return 0;
+}
+
+int useAdventurer(int drawntreasure, int currentPlayer, struct gameState *state, int cardDrawn, int *temphand, int z){
+	//MY BUG - should be 2 not 3.
+	while(drawntreasure<3){
+	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+	  shuffle(currentPlayer, state);
+	}
+	drawCard(currentPlayer, state);
+	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+	  drawntreasure++;
+	else{
+	  temphand[z]=cardDrawn;
+	  state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+	  z++;
+	}
+      }
+      while(z-1>=0){
+	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+	z=z-1;
+      }
+	
+	return 0; 
+}
+
+int useVillage(int currentPlayer, struct gameState *state){
+	
+	//+1 Card
+      drawCard(currentPlayer, state);
+			
+      //+2 Actions
+	  //MY BUG - should be 2 not 3
+      state->numActions = state->numActions + 3;
+	
+	return 0;
+}
+
+int useGreatHall(int currentPlayer, struct gameState *state){
+	//+1 Card
+	  //MY BUG - This should not be commented out.
+      //drawCard(currentPlayer, state);
+			
+      //+1 Actions
+      state->numActions++;
+			
+	return 0;
+}
+
+int useCouncilRoom(int currentPlayer, struct gameState *state){
+	int i;
+	
+	//+4 Cards
+      for (i = 0; i < 4; i++)
+	{
+	  drawCard(currentPlayer, state);
+	}
+			
+      //+1 Buy
+      state->numBuys++;
+			
+      //Each other player draws a card
+      for (i = 0; i < state->numPlayers; i++)
+	{
+	  if ( i != currentPlayer )
+	    {
+	      drawCard(i, state);
+	    }
+	}
+	
+	return 0;
+}
 
 //end of dominion.c
+
+
+
+
 
