@@ -1,0 +1,16 @@
+        -:    0:Source:asserttrue.h
+        -:    0:Graph:cardtest3.gcno
+        -:    0:Data:cardtest3.gcda
+        -:    0:Runs:2
+        -:    0:Programs:1
+        -:    1:#include <stdlib.h>
+        -:    2:
+        2:    3:void assertTrue(int test){
+        2:    4:	if(test) {
+    #####:    5:    	printf("Test was Successful\n");
+        -:    6:    } else {
+        2:    7:    	printf("Test Failed.\n");
+        -:    8:    }
+        -:    9:
+        2:   10:    return;
+        -:   11:}
