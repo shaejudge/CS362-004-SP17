@@ -70,6 +70,32 @@ gcovC4: cardtest4.c dominion.o rngs.o
 	
 gcovAll: gcovU1 gcovC1 gcovC2 gcovC3 gcovC4
 
+randomtestcard1: randomtestcard1.c dominion.o rngs.o
+	gcc -o randomtestcard1 -g randomtestcard1.c dominion.o rngs.o $(CFLAGS)
+
+randomtestcard2: randomtestcard2.c dominion.o rngs.o
+	gcc -o randomtestcard2 -g randomtestcard2.c dominion.o rngs.o $(CFLAGS)
+
+randomtestadventurer: randomtestadventurer.c dominion.o rngs.o
+	gcc -o randomtestadventurer -g randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+	
+gcovRand1: randomtestcard1.c dominion.o rngs.o
+	gcc -fprofile-arcs -ftest-coverage randomtestcard1.c dominion.o rngs.o -lm
+
+gcovRand2: randomtestcard2.c dominion.o rngs.o
+	gcc -fprofile-arcs -ftest-coverage randomtestcard2.c dominion.o rngs.o -lm
+	
+gcovRandAdv: randomtestadventurer.c dominion.o rngs.o
+	gcc -fprofile-arcs -ftest-coverage randomtestadventurer.c dominion.o rngs.o -lm
+	
+randomAll: gcovRand1 gcovRand2 gcovRandAdv
+	./randomtestcard1 > randomtestresults.out
+	./randomtestcard2 >> randomtestresults.out
+	./randomtestadventurer >> randomtestresults.out
+	
+	#gcov randomtestcard1.c
+
+
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
