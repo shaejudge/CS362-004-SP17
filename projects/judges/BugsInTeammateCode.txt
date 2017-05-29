@@ -1,0 +1,3 @@
+Bugs found in edwardseDominion/dominion.c
+
+After running my refactored tests, I noticed a couple of bugs. The Adventurer, and the Village. I noticed that the Village card did not add 2 more actions as it was supposed to. I also noticed that the Adventurer card stopped after finding 1 treasure card, not 2. Upon looking through the code itself, I noticed some other bugs. Firstly, the Smithy card causes the next player to draw a card, not the current player. Secondly, I noticed that the Feast card has the wrong operator when checking for the cost of the card in question. I also noticed that the switch statement for the Adventurer does not break afterward, so it gets stuck in a loop.
